@@ -1,4 +1,5 @@
 import pandas as pd 
+import matplotlib.pyplot as plt
 
 military_spending = pd.read_excel('C:\CS 573\Assignments\Surprise_Map_Scrollytelling_World_Data\Data\SIPRI-Milex-data-1949-2022.xlsx', sheet_name='Current US$')
 
@@ -25,6 +26,8 @@ world_population = world_population.iloc[:217]
 
 military_spending.to_csv('./Data/military_spending.csv', index=False)
 world_population.to_csv('./Data/world_population.csv', index=False)
+
+
 
 
 
