@@ -14,5 +14,5 @@ dataFrameYear = pd.DataFrame(yearData)
 
 print(dataFrameYear)
 
-dataFrameYear.to_csv( yearTested + '-output.csv', index=False)
+dataFrameYear.to_csv( 'graphOutputs/' + yearTested + '-output.csv', index=False)
 
