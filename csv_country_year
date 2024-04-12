@@ -1,0 +1,54 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import sys
+
+
+
+# Step 1: Read the CSV files
+population_data = pd.read_csv('data/world_population_clean.csv')
+military_spending_data = pd.read_csv('data/military_spending_clean.csv')
+
+
+year_list = []
+country_list = []
+mil_stat_list = []
+pop_stat_list = []
+
+
+
+print(military_spending_data.columns[12])
+
+total_years_X = len(military_spending_data.columns.tolist())
+
+total_countries_Y = len(population_data['Country'].values)
+
+
+for i in range(1, total_years_X):
+    for j in range(1, total_countries_Y):
+        year_list.append(military_spending_data.columns[i])
+        country_list.append(military_spending_data['Country'].values[j])
+
+        # stat_x = military_spending_data.columns.tolist()[1:][i]
+        # stat_y = population_data['Country'].values[1:][j]
+        # print(stat_x)
+        # print(stat_y)
+
+
+        mil_stat_list.append(military_spending_data.iloc[j][i])
+        pop_stat_list.append(population_data.iloc[j][i])
+
+
+
+
+allData = {'Year': year_list,
+            'Country': country_list,
+            'Military': mil_stat_list,
+            'Population': pop_stat_list,
+               }
+
+
+dataFrameX = pd.DataFrame(allData)
+
+print(dataFrameX)
+
+dataFrameX.to_csv( 'graphOutputs/' + 'country-year-output.csv', index=False)
