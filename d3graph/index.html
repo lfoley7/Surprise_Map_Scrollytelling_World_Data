@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Graph</title>
+    <!-- Include D3.js library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .svg-container {
+            display: inline-block;
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: calc(100% * (3 / 4)); /* Adjust aspect ratio as needed */
+            vertical-align: top;
+            overflow: hidden;
+        }
+
+        .svg-content {
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>D3.js Graph Example</h1>
+    <div id="graph-container" class="svg-container"></div>
+
+    <script>
+
+        //Read the data
+        d3.csv("../graphOutputs/country-year-output.csv", function (d) {
+            if(!["United States", "China", "India"].includes(d.Country)){
+                return {
+                year: +d.Year, // Convert to number
+                country: d.Country,
+                militarySpending: +d.Military, // Convert to number
+                population: +d.Population // Convert to number
+            };
+            }
+           
+        }).then(function (data) {
+            // Group data by country
+            const groupedData = d3.group(data, d => d.country);
+
+            // Generate random colors for each country
+            const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+            const containerWidth = document.getElementById("graph-container").clientWidth;
+            const containerHeight = containerWidth * 0.6; // Aspect ratio 1:1
+            console.log(containerWidth);
+            console.log(containerHeight);
+
+            const margin = { top: 50, right: 50, bottom: 50, left: 100 };
+
+            const innerWidth = containerWidth - margin.left - margin.right;
+            const innerHeight = containerHeight - margin.top - margin.bottom;
+
+            // Create SVG element
+            const svg = d3.select("#graph-container")
+                .append("svg")
+                .attr("preserveAspectRatio", "xMinYMin meet")
+                .attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
+                .classed("svg-content", true);
+
+            // Define scales
+            const xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.militarySpending)])
+                .range([margin.left, margin.left + innerWidth]);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.population)])
+                .range([innerHeight - margin.top, margin.top]);
+
+            // Define line generator
+            const line = d3.line()
+                .x(d => xScale(d.militarySpending))
+                .y(d => yScale(d.population));
+
+            // Plot data points for each country
+            groupedData.forEach((countryData, country) => {
+                const color = colorScale(country); // Get random color for the country
+
+                // Append path element for the line
+                svg.append("path")
+                    .datum(countryData)
+                    .attr("fill", "none")
+                    .attr("class", "line")
+                    .attr("d", line)
+                    .style("stroke", color);
+
+                 // Append label for the line
+                 svg.append("text")
+                    .datum(countryData[countryData.length - 1]) // Position the label at the end of the line
+                    .attr("transform", `translate(${xScale(countryData[countryData.length - 1].militarySpending)}, ${yScale(countryData[countryData.length - 1].population)})`)
+                    .attr("x", 5) // Offset from the end of the line
+                    .attr("dy", "0.35em")
+                    .style("font-size", "12px")
+                    .style("fill", color)
+                    .text(country);
+            });
+
+            // Add axes
+            svg.append("g")
+                .attr("transform", `translate(0,${innerHeight - margin.top})`)
+                .call(d3.axisBottom(xScale));
+
+            svg.append("g")
+                .attr("transform", `translate(${margin.left},0)`)
+                .call(d3.axisLeft(yScale));
+
+
+            // Add labels
+            svg.append("text")
+                .attr("transform", `translate(${innerWidth / 2},${innerHeight})`)
+                .text("Military Spending");
+
+            svg.append("text")
+                .attr("transform", `translate(${margin.left - 30},${margin.top + innerHeight / 2}) rotate(-90)`)
+                .text("Population");
+
+            svg.append("text")
+                .attr("transform", `translate(${containerWidth / 2},${margin.top / 2})`)
+                .text("D3.js Graph Example");
+        });
+
+
+    </script>
+</body>
+
+</html>
