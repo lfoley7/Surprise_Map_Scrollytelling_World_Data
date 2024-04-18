@@ -36,11 +36,11 @@
 
         //Read the data
         d3.csv("../graphOutputs/country-year-output.csv", function (d) {
-            if (![].includes(d.Country)) {
+            if (["Taiwan"].includes(d.Country)) {
                 return {
                     year: d.Year, // Convert to number
                     country: d.Country,
-                    militarySpending: d.Military === "" ? NaN : Math.log10(+d.Military + 1), // Convert to number if not empty, NaN otherwise
+                    militarySpending: +d.Military, // Convert to number if not empty, NaN otherwise
                     population: +d.Population // Convert to number
 
                 };
@@ -49,6 +49,7 @@
         }).then(function (data) {
             // Group data by country
             const groupedData = d3.group(data, d => d.country);
+            console.log(data);
 
             // Generate random colors for each country
             const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
@@ -71,17 +72,19 @@
 
             // Define scales
             const xScale = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.militarySpending)])
+                .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])
                 .range([margin.left, margin.left + innerWidth]);
 
+            console.log(d3.max(data, d => d.militarySpending))
+
             const yScale = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.population)])
-                .range([innerHeight - margin.top, margin.top]);
+                .domain([0, d3.max(data, d => d.militarySpending)])
+                .range([innerHeight - margin.bottom, margin.top]);
 
             // Define line generator
             const line = d3.line()
-                .x(d => xScale(d.militarySpending))
-                .y(d => yScale(d.population))
+                .x(d => xScale(d.year))
+                .y(d => yScale(d.militarySpending))
                 .defined(function (d) { return !isNaN(d.militarySpending); }); // Exclude points with null y-values
 
             // Plot data points for each country
@@ -106,7 +109,7 @@
                 // Append label for the line
                 svg.append("text")
                     .datum(countryData[countryData.length - 1]) // Position the label at the end of the line
-                    .attr("transform", `translate(${xScale(countryData[lastValidIndex].militarySpending)}, ${yScale(countryData[lastValidIndex].population)})`)
+                    .attr("transform", `translate(${xScale(countryData[lastValidIndex].year)}, ${yScale(countryData[lastValidIndex].militarySpending)})`)
                     .attr("x", 5) // Offset from the end of the line
                     .attr("dy", "0.35em")
                     .style("font-size", "12px")
@@ -129,11 +132,11 @@
             // Add labels
             svg.append("text")
                 .attr("transform", `translate(${innerWidth / 2},${innerHeight})`)
-                .text("Military Spending");
+                .text("Year");
 
             svg.append("text")
                 .attr("transform", `translate(${margin.left - 30},${margin.top + innerHeight / 2}) rotate(-90)`)
-                .text("Population");
+                .text("Military Spending");
 
             svg.append("text")
                 .attr("transform", `translate(${containerWidth / 2},${margin.top / 2})`)
