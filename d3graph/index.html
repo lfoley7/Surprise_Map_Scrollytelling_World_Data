@@ -82,7 +82,7 @@
             const line = d3.line()
                 .x(d => xScale(d.militarySpending))
                 .y(d => yScale(d.population))
-                /*.defined(function (d) { return !isNaN(d.militarySpending); })*/; // Exclude points with null y-values
+                .defined(function (d) { return !isNaN(d.militarySpending); }); // Exclude points with null y-values
 
             // Plot data points for each country
             groupedData.forEach((countryData, country) => {
