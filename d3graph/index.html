@@ -11,7 +11,7 @@
         .svg-container {
             display: inline-block;
             position: relative;
-            width: 100%;
+            width: 80%;
             height: 0;
             padding-bottom: calc(100% * (3 / 4));
             /* Adjust aspect ratio as needed */
@@ -36,11 +36,11 @@
 
         //Read the data
         d3.csv("../graphOutputs/country-year-output.csv", function (d) {
-            if (["Taiwan"].includes(d.Country)) {
+            if (![].includes(d.Country)) {
                 return {
                     year: d.Year, // Convert to number
                     country: d.Country,
-                    militarySpending: +d.Military, // Convert to number if not empty, NaN otherwise
+                    militarySpending: d.Military === "" ? NaN : Math.log10(+d.Military + 1), // Convert to number if not empty, NaN otherwise
                     population: +d.Population // Convert to number
 
                 };
