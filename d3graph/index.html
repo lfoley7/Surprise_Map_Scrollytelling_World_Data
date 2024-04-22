@@ -57,7 +57,7 @@
                 countryList = countryListString.split(',');
             }
             console.log(countryList)
-            d3.csv("../graphOutputs/country-year-output.csv", function (d) {
+            d3.csv("country-year-output.csv", function (d) {
                 if (countryList.length === 0 || countryList.includes(d.Country)) {
                     return {
                         year: d.Year, // Convert to number
