@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Spending Timeline</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link title="timeline-styles" rel="stylesheet"
+        href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+    <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <div id="timeline"></div>
+        <iframe id="graph-iframe" src="d3graph/graph.html" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        var timeFrames = [
+            { startYear: 1960, endYear: 1964, countries: ['Afghanistan', 'Albania', 'Algeria', 'Angola'] },
+            { startYear: 1965, endYear: 1969, countries: ['Argentina', 'Armenia', 'Australia', 'Austria'] },
+            { startYear: 1970, endYear: 1974, countries: ['Azerbaijan', 'Bahrain', 'Bangladesh', 'Belarus'] },
+            { startYear: 1975, endYear: 1979, countries: ['Belgium', 'Belize', 'Benin', 'Bolivia'] },
+            { startYear: 1980, endYear: 1984, countries: ['Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei'] },
+            { startYear: 1985, endYear: 1989, countries: ['Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia'] },
+            { startYear: 1990, endYear: 1994, countries: ['Cameroon', 'Canada', 'Cape Verde', 'Central African Republic'] },
+            { startYear: 1995, endYear: 1999, countries: ['Chad', 'Chile', 'China', 'Colombia'] },
+            { startYear: 2000, endYear: 2004, countries: ['Congo, DR', 'Congo, Republic', 'Costa Rica', 'Cote d\'Ivoire'] },
+            { startYear: 2005, endYear: 2009, countries: ['Croatia', 'Cuba', 'Cyprus', 'Czech Republic'] },
+            { startYear: 2010, endYear: 2014, countries: ['Denmark', 'Djibouti', 'Dominican Republic', 'Ecuador'] },
+            { startYear: 2015, endYear: 2019, countries: ['Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea'] },
+            { startYear: 2020, endYear: 2022, countries: ['Estonia', 'Eswatini', 'Ethiopia', 'European Union'] }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var timelineData = {
+                "title": {
+                    "text": {
+                        "headline": "Years Overview",
+                        "text": "<p>Timeline from 1960 to 2022 in 5-year steps.</p>"
+                    }
+                },
+                "events": timeFrames.map(frame => ({
+                    "start_date": {
+                        "year": frame.startYear
+                    },
+                    "end_date": {
+                        "year": frame.startYear + 4
+                    },
+                    "text": {
+                        "headline": frame.startYear + " - " + (frame.startYear + 4)
+                    },
+                    "unique_id": frame.startYear
+                }))
+            };
+
+            var options = {
+                start_at_end: false,
+                hash_bookmark: false,
+                default_bg_color: { r: 255, g: 255, b: 255 },
+                timenav_position: 'bottom',
+                optimal_tick_width: 100
+            };
+
+            function setCountriesForTimeFrame(startYear) {
+                var timeFrame = timeFrames.find(frame => frame.startYear === startYear);
+                if (timeFrame) {
+                    var iframe = document.getElementById('graph-iframe');
+                    var countryList = timeFrame.countries.join(',');
+
+                    // Update the 'src' attribute of the iframe with the countries as query parameters
+                    iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(countryList)}`;
+                }
+            }
+            window.timeline = new TL.Timeline('timeline', timelineData, options);
+            window.timeline.on('change', function (e) {
+                var startYear = parseInt(e.unique_id.slice(1, 5), 10);
+                setCountriesForTimeFrame(startYear);
+            });
+        });
+
+    </script>
+</body>
+
+</html>

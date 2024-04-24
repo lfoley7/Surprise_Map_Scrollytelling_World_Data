@@ -5,34 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D3.js Graph</title>
-    <!-- Include D3.js library -->
+    <link rel="stylesheet" href="../index.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        #graph-container {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
 </head>
 
 <body>
     <div id="graph-container" class="svg-container"></div>
-
     <input type="hidden" id="country-list" value="Uganda,Israel,Cameroon,Panama">
 
     <script>
+        function getQueryStringValue(key) {
+            return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        }
+
+        var countriesQueryString = getQueryStringValue("countries");
+        if (countriesQueryString) {
+            document.getElementById("country-list").value = countriesQueryString;
+        }
 
         //Read the data
-
         function createGraph() {
-
             //Zero out SVG
             let graphDiv = document.getElementById("graph-container");
             graphDiv.innerHTML = "";
@@ -49,7 +41,6 @@
                 .attr("width", overallWidth)
                 .attr("height", overallHeight);
 
-
             //load and parse hidden string
             let countryListString = document.getElementById("country-list").value;
             var countryList = [];
@@ -65,23 +56,19 @@
                         militarySpending: d.Military === "" ? NaN : +d.Military, // Convert to number if not empty, NaN otherwise
                         militarySpendingLog: d.Military === "" ? NaN : Math.log10(+d.Military + 1), // Convert to number if not empty, NaN otherwise
                         population: +d.Population // Convert to number
-
                     };
                 }
 
             }).then(function (data) {
                 // Group data by country
                 const groupedData = d3.group(data, d => d.country);
-
                 // Generate random colors for each country
                 const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
 
                 // Define scales
                 const xScale = d3.scaleLinear()
                     .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])
                     .range([offsetWidth, overallWidth - offsetWidth]);
-
 
                 const yScale = d3.scaleLinear()
                     .domain([0, d3.max(data, d => d.militarySpendingLog)])
@@ -107,10 +94,7 @@
 
                     //filter for NaNs
                     const filteredData = countryData.filter(obj => !isNaN(obj.militarySpendingLog));
-
                     const lastValidIndex = countryData.indexOf(filteredData[filteredData.length - 1]);
-
-
 
                     // Append label for each line
                     svg.append("text")
@@ -149,12 +133,23 @@
 
         createGraph();
 
+        window.addEventListener('message', function (event) {
+            if (event.origin !== window.location.origin) {
+                return;
+            }
+
+            if (event.data.type === 'UPDATE_COUNTRIES') {
+                const newCountries = event.data.countries;
+                document.getElementById("country-list").value = newCountries.join(',');
+                createGraph();
+            }
+        }, false);
+
         // Listen for the scroll event
         window.addEventListener('resize', function () {
             // Call the redraw function when the scroll event occurs
             createGraph();
         });
-
 
     </script>
 </body>
