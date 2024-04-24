@@ -11,7 +11,9 @@
 
 <body>
     <div id="graph-container" class="svg-container"></div>
-    <input type="hidden" id="country-list" value="Uganda,Israel,Cameroon,Panama">
+    <input type="hidden" id="country-list" value="United States,China,India">
+    <input type="hidden" id="startYear" value="">
+    <input type="hidden" id="endYear" value="">
 
     <script>
         function getQueryStringValue(key) {
@@ -22,6 +24,10 @@
         if (countriesQueryString) {
             document.getElementById("country-list").value = countriesQueryString;
         }
+        /*
+
+        get startYear and endYear
+        */
 
         //Read the data
         function createGraph() {
@@ -41,15 +47,31 @@
                 .attr("width", overallWidth)
                 .attr("height", overallHeight);
 
-            //load and parse hidden string
+            //load and parse hidden country string
             let countryListString = document.getElementById("country-list").value;
             var countryList = [];
             if (countryListString !== "") {
                 countryList = countryListString.split(',');
             }
+
+            //parse year range
+            let startYear = document.getElementById("startYear").value;
+            let endYear = document.getElementById("endYear").value;
+            var yearList = [];
+            if (startYear !== "" && endYear !== "") {
+
+                yearList.push(startYear);
+                for (let i = startYear + 1; i < endYear; i++) {
+                    yearList.push(i);
+                }
+                yearList.push(endYear);
+            }
+
+
+
             console.log(countryList)
             d3.csv("country-year-output.csv", function (d) {
-                if (countryList.length === 0 || countryList.includes(d.Country)) {
+                if ((yearList.length === 0 || yearList.includes(d.Year)) && (countryList.length === 0 || countryList.includes(d.Country))) {
                     return {
                         year: d.Year, // Convert to number
                         country: d.Country,
@@ -95,23 +117,27 @@
                     //filter for NaNs
                     const filteredData = countryData.filter(obj => !isNaN(obj.militarySpendingLog));
                     const lastValidIndex = countryData.indexOf(filteredData[filteredData.length - 1]);
+                    console.log(lastValidIndex);
 
                     // Append label for each line
-                    svg.append("text")
-                        .datum(countryData[countryData.length - 1]) // Position the label at the end of the line
-                        .attr("transform", `translate(${xScale(countryData[lastValidIndex].year)}, ${yScale(countryData[lastValidIndex].militarySpendingLog)})`)
-                        .attr("x", 5) // Offset from the end of the line
-                        .attr("dy", "0.35em")
-                        .style("font-size", "12px")
-                        .style("fill", color)
-                        .text(country);
+                    if (lastValidIndex !== -1) {
+                        svg.append("text")
+                            .datum(countryData[countryData.length - 1]) // Position the label at the end of the line
+                            .attr("transform", `translate(${xScale(countryData[lastValidIndex].year)}, ${yScale(countryData[lastValidIndex].militarySpendingLog)})`)
+                            .attr("x", 5) // Offset from the end of the line
+                            .attr("dy", "0.35em")
+                            .style("font-size", "12px")
+                            .style("fill", color)
+                            .text(country);
+                    }
+
                 });
 
                 //Add axes
                 svg.append("g")
                     .attr("transform", `translate(0,${overallHeight - offsetHeight})`)
                     .call(d3.axisBottom(xScale)
-                        .ticks((overallWidth - offsetWidth * 2) / 40)
+                        .ticks(5)
                         .tickFormat(d3.format(""))
                     );
 
