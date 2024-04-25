@@ -582,10 +582,15 @@
 
             function updateIframeWithCountries(countries, graphStartYear, graphEndYear) {
                 var iframe = document.getElementById("graph-iframe");
-                var countryList = countries.join(",");
-                iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(
-                    countryList
-                )}&startYear=${graphStartYear}&endYear=${graphEndYear}`;
+                if (countries && countries.length > 0) {
+                    var countryList = countries.join(",");
+                    iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(
+                        countryList
+                    )}&startYear=${graphStartYear}&endYear=${graphEndYear}`;
+                } else {
+                    // No specific country value passed, display all countries
+                    iframe.src = `d3graph/graph.html?countries=all&startYear=${graphStartYear}&endYear=${graphEndYear}`;
+                }
             }
 
             // adding a scroll listener
