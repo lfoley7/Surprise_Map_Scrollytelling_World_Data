@@ -1,180 +1,512 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Military Spending Timeline</title>
     <link rel="stylesheet" href="index.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      title="timeline-styles"
-      rel="stylesheet"
-      href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link title="timeline-styles" rel="stylesheet"
+        href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css" />
     <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
-  </head>
+</head>
 
-  <body>
+<body>
     <div id="container">
-      <div id="timeline"></div>
-      <iframe
-        id="graph-iframe"
-        src="d3graph/graph.html"
-        frameborder="0"
-      ></iframe>
+        <div id="timeline"></div>
+        <iframe id="graph-iframe" src="d3graph/graph.html" frameborder="0"></iframe>
     </div>
 
     <script>
-      var timeFrames = [
-        {
-          startYear: 1960,
-          endYear: 1964,
-          countries: ["United States", "Japan"],
-        },
-        {
-          startYear: 1965,
-          endYear: 1969,
-          countries: ["Argentina", "Armenia", "Australia", "Austria"],
-        },
-        {
-          startYear: 1970,
-          endYear: 1974,
-          countries: ["Azerbaijan", "Bahrain", "Bangladesh", "Belarus"],
-        },
-        {
-          startYear: 1975,
-          endYear: 1979,
-          countries: ["Belgium", "Belize", "Benin", "Bolivia"],
-        },
-        {
-          startYear: 1980,
-          endYear: 1984,
-          countries: ["Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei"],
-        },
-        {
-          startYear: 1985,
-          endYear: 1989,
-          countries: ["Bulgaria", "Burkina Faso", "Burundi", "Cambodia"],
-        },
-        {
-          startYear: 1990,
-          endYear: 1994,
-          countries: [
-            "Cameroon",
-            "Canada",
-            "Cape Verde",
-            "Central African Republic",
-          ],
-        },
-        {
-          startYear: 1995,
-          endYear: 1999,
-          countries: ["Chad", "Chile", "China", "Colombia"],
-        },
-        {
-          startYear: 2000,
-          endYear: 2004,
-          countries: [
-            "Congo, DR",
-            "Congo, Republic",
-            "Costa Rica",
-            "Cote d'Ivoire",
-          ],
-        },
-        {
-          startYear: 2005,
-          endYear: 2009,
-          countries: ["Croatia", "Cuba", "Cyprus", "Czech Republic"],
-        },
-        {
-          startYear: 2010,
-          endYear: 2014,
-          countries: ["Denmark", "Djibouti", "Dominican Republic", "Ecuador"],
-        },
-        {
-          startYear: 2015,
-          endYear: 2019,
-          countries: ["Egypt", "El Salvador", "Equatorial Guinea", "Eritrea"],
-        },
-        {
-          startYear: 2020,
-          endYear: 2022,
-          countries: ["Estonia", "Eswatini", "Ethiopia", "European Union"],
-        },
-      ];
-
-      document.addEventListener("DOMContentLoaded", function () {
-        var timelineData = {
-          title: {
-            text: {
-              headline: "Years Overview",
-              text: "<p>Timeline from 1960 to 2022 in 5-year steps.</p>",
+        var timeFrames = [
+            {
+                startYear: 1960,
+                endYear: 1964,
+                countries: ["United States", "Japan"],
             },
-          },
-          events: timeFrames.map((frame) => ({
-            start_date: {
-              year: frame.startYear,
+            {
+                startYear: 1965,
+                endYear: 1969,
+                countries: ["Argentina", "Armenia", "Australia", "Austria"],
             },
-            end_date: {
-              year: frame.startYear + 4,
+            {
+                startYear: 1970,
+                endYear: 1974,
+                countries: ["Azerbaijan", "Bahrain", "Bangladesh", "Belarus"],
             },
-            text: {
-              headline: frame.startYear + " - " + (frame.startYear + 4),
+            {
+                startYear: 1975,
+                endYear: 1979,
+                countries: ["Belgium", "Belize", "Benin", "Bolivia"],
             },
-            unique_id: frame.startYear,
-          })),
-        };
+            {
+                startYear: 1980,
+                endYear: 1984,
+                countries: ["Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei"],
+            },
+            {
+                startYear: 1985,
+                endYear: 1989,
+                countries: ["Bulgaria", "Burkina Faso", "Burundi", "Cambodia"],
+            },
+            {
+                startYear: 1990,
+                endYear: 1994,
+                countries: [
+                    "Cameroon",
+                    "Canada",
+                    "Cape Verde",
+                    "Central African Republic",
+                ],
+            },
+            {
+                startYear: 1995,
+                endYear: 1999,
+                countries: ["Chad", "Chile", "China", "Colombia"],
+            },
+            {
+                startYear: 2000,
+                endYear: 2004,
+                countries: [
+                    "Congo, DR",
+                    "Congo, Republic",
+                    "Costa Rica",
+                    "Cote d'Ivoire",
+                ],
+            },
+            {
+                startYear: 2005,
+                endYear: 2009,
+                countries: ["Croatia", "Cuba", "Cyprus", "Czech Republic"],
+            },
+            {
+                startYear: 2010,
+                endYear: 2014,
+                countries: ["Denmark", "Djibouti", "Dominican Republic", "Ecuador"],
+            },
+            {
+                startYear: 2015,
+                endYear: 2019,
+                countries: ["Egypt", "El Salvador", "Equatorial Guinea", "Eritrea"],
+            },
+            {
+                startYear: 2020,
+                endYear: 2022,
+                countries: ["Estonia", "Eswatini", "Ethiopia", "European Union"],
+            },
+        ];
 
-        var options = {
-          start_at_end: false,
-          hash_bookmark: false,
-          default_bg_color: { r: 255, g: 255, b: 255 },
-          timenav_position: "bottom",
-          optimal_tick_width: 100,
-        };
+        var events = [
+            {
+                startYear: 1961,
+                endYear: 1961,
+                Name: "Construction of Berlin Wall",
+                countries: ["United States", "Germany", "United Kingdom", "France"],
+            },
+            {
+                startYear: 1962,
+                endYear: 1962,
+                Name: "Cuban Missile Crisis",
+                countries: ["United States", "Cuba"],
+            },
+            {
+                startYear: 1963,
+                endYear: 1963,
+                Name: "JFK Assasination",
+                countries: ["United States"],
+            },
+            {
+                startYear: 1963,
+                endYear: 1963,
+                Name: "Kenya Independence",
+                countries: ["Kenya", "United Kingdom"],
+            },
+            {
+                startYear: 1964,
+                endYear: 1964,
+                Name: "Brazil copu d'état",
+                countries: ["Brazil"],
+            },
+            {
+                startYear: 1964,
+                endYear: 1972,
+                Name: "Zimbabwe Started To fight for independence",
+                countries: ["Zimbabwe", "United Kingdom"],
+            },
+            {
+                startYear: 1965,
+                endYear: 1965,
+                Name: "The India-Pakistan War of 1965",
+                countries: ["India", "Pakistan"],
+            },
+            {
+                startYear: 1967,
+                endYear: 1967,
+                Name: "6 Days War",
+                countries: ["Jordan", "Isreael", "Egypt", "Syria"],
+            },
+            {
+                startYear: 1967,
+                endYear: 1970,
+                Name: "Nigerian Civil War",
+                countries: ["Nigeria", "Egypt"],
+            },
+            {
+                startYear: 1972,
+                endYear: 1972,
+                Name: "Anti-Ballistic Missile Treaty and SALT I",
+                countries: ["United States"],
+            },
+            {
+                startYear: 1973,
+                endYear: 1974,
+                Name: "First Oil Crisis",
+                countries: [
+                    "Israel",
+                    "Egypt",
+                    "Syria",
+                    "United States",
+                    "Canada",
+                    "  Japan",
+                    "Netherlands",
+                ],
+            },
+            {
+                startYear: 1972,
+                endYear: 1972,
+                Name: "U.S. formally establish diplomatic relationship with China",
+                countries: ["United States", "China", "Taiwan"],
+            },
+            {
+                startYear: 1979,
+                endYear: 1979,
+                Name: "Iranian Revolution",
+                countries: ["Iran"],
+            },
+            {
+                startYear: 1980,
+                endYear: 1980,
+                Name: "U.S. promise military assistance to Pakistan",
+                countries: ["United States", "Pakistan"],
+            },
+            {
+                startYear: 1982,
+                endYear: 1985,
+                Name: "Lebanon War",
+                countries: ["Lebanon", "Israel", "Syria"],
+            },
+            {
+                startYear: 1982,
+                endYear: 1983,
+                Name: "U.S. invade Grenada",
+                countries: ["United States", "Cuba"],
+            },
+            {
+                startYear: 1983,
+                endYear: 2009,
+                Name: "Sri Lanka Civil War",
+                countries: ["Sri Lanka", "India"],
+            },
+            {
+                startYear: 1987,
+                endYear: 1987,
+                Name: "Taiwan Ends Martial Law",
+                countries: ["Taiwan", "China"],
+            },
+            {
+                startYear: 1986,
+                endYear: 1986,
+                Name: "South Yemen Civil War",
+                countries: ["Yemen"],
+            },
+            {
+                startYear: 1989,
+                endYear: 1989,
+                Name: "Tianman Sqaure Protest",
+                countries: ["China"],
+            },
+            {
+                startYear: 1989,
+                endYear: 1989,
+                Name: "Philippines Coup attempt",
+                countries: ["Philippines", "United States"],
+            },
+            {
+                startYear: 1990,
+                endYear: 1990,
+                Name: "U.S. invades Panama",
+                countries: ["United States", "Panama"],
+            },
+            {
+                startYear: 1990,
+                endYear: 1990,
+                Name: "German Unification",
+                countries: ["German"],
+            },
+            {
+                startYear: 1990,
+                endYear: 1991,
+                Name: "The Gulf War",
+                countries: ["Iran", "United States", "Kuwait", "Iraq"],
+            },
+            {
+                startYear: 1991,
+                endYear: 1991,
+                Name: "Soviet Union Collapsed",
+                countries: [
+                    "Russia",
+                    "Ukraine",
+                    "Georgia",
+                    "Azerbaijan",
+                    "Armenia",
+                    "Estonia",
+                    "Latvia",
+                    "Lithuania",
+                    "Moldova",
+                ],
+            },
+            {
+                startYear: 1995,
+                endYear: 1995,
+                Name: "Bosnian War",
+                countries: ["Bosnia and Herzegovina"],
+            },
+            {
+                startYear: 1995,
+                endYear: 1995,
+                Name: "U.S. giving Panama control back",
+                countries: ["United States", "Panama"],
+            },
+            {
+                startYear: 1998,
+                endYear: 1998,
+                Name: "Pakistan Nuclear Testing",
+                countries: ["United States", "Pakistan", "Israel"],
+            },
+            {
+                startYear: 2001,
+                endYear: 2001,
+                Name: "9/11",
+                countries: [
+                    "United States",
+                    "Iraq",
+                    "Israel",
+                    "United Kingdom",
+                    "China",
+                    "Japan",
+                    "Canada",
+                ],
+            },
+            {
+                startYear: 2003,
+                endYear: 2011,
+                Name: "Iraq War",
+                countries: [
+                    "Australia",
+                    "United States",
+                    "United Kingdom",
+                    "Iran",
+                    "Iraq",
+                    "Poland",
+                ],
+            },
+            {
+                startYear: 2003,
+                endYear: 2020,
+                Name: "War in Darfur",
+                countries: ["South Sudan", "China", "Iran", "Libya", "Uganda"],
+            },
+            {
+                startYear: 2003,
+                endYear: 2003,
+                Name: "Second Congo War Ended",
+                countries: [
+                    "Congo",
+                    "Lybia",
+                    "Namibia",
+                    "Zimbabew",
+                    "South Sudan",
+                    "Uganda",
+                ],
+            },
+            {
+                startYear: 2008,
+                endYear: 2008,
+                Name: "2008 Recession",
+                countries: [
+                    "United States",
+                    "Argentina",
+                    "Mexico",
+                    "Hungary",
+                    "Russia",
+                    "Ireland",
+                    "Romania",
+                    "Jamaica",
+                    "China",
+                    "Japan",
+                    "Brazil",
+                    "Peru",
+                    "India",
+                ],
+            },
+            {
+                startYear: 2008,
+                endYear: 2008,
+                Name: "Barack Obama wins presidential election",
+                countries: ["United States", "China"],
+            },
+            {
+                startYear: 2010,
+                endYear: 2012,
+                Name: "Arab Spring",
+                countries: ["Tunisia", "Libya", "Yemen", "Syria", "Egypt", "Bahrain"],
+            },
+            {
+                startYear: 2010,
+                endYear: 2010,
+                Name: "U.S. withdraw from Iraq",
+                countries: ["Untied States", "Iraq"],
+            },
+            {
+                startYear: 2011,
+                endYear: 2011,
+                Name: "Iran Nuclear Deal",
+                countries: [
+                    "Untied States",
+                    "Iran",
+                    "China",
+                    "France",
+                    "Germany",
+                    "United Kingdom",
+                ],
+            },
+            {
+                startYear: 2015,
+                endYear: 2015,
+                Name: "U.S. started withdrawal in Afghanistan",
+                countries: ["United States"],
+            },
+            {
+                startYear: 2016,
+                endYear: 2016,
+                Name: "Trump wins presidential election",
+                countries: ["United States", "Russia", "China"],
+            },
+            {
+                startYear: 2020,
+                endYear: 2020,
+                Name: "COVID Pandemic",
+                countries: [
+                    "United States",
+                    "China",
+                    "Russia",
+                    "United Kingdom",
+                    "Canda",
+                    "Japan",
+                    "Australia",
+                    "German",
+                ],
+            },
+            {
+                startYear: 2020,
+                endYear: 2022,
+                Name: "Russia invades Ukraine",
+                countries: [
+                    "United States",
+                    "Russia",
+                    "Ukraine",
+                    "Taiwan",
+                    "Germany",
+                    "United Kingdom",
+                    "Canada",
+                    "Netherlands",
+                ],
+            },
+        ];
 
-        function setCountriesForTimeFrame(startYear) {
-          var timeFrame = timeFrames.find(
-            (frame) => frame.startYear === startYear
-          );
-          if (timeFrame) {
-            var iframe = document.getElementById("graph-iframe");
-            var countryList = timeFrame.countries.join(",");
+        document.addEventListener("DOMContentLoaded", function () {
+            var timelineData = {
+                title: {
+                    text: {
+                        headline: "Global Military Spending Timeline",
+                        text: "<p>A detailed look at key events from 1960 to the present.</p>",
+                    },
+                },
+                events: events.map((event) => ({
+                    start_date: {
+                        year: event.startYear,
+                        month: event.endYear === event.startYear ? 1 : undefined,
+                    },
+                    end_date: {
+                        year: event.endYear,
+                        month: event.endYear === event.startYear ? 12 : undefined,
+                    },
+                    text: {
+                        headline: event.Name,
+                        text: `Countries involved: ${event.countries.join(", ")}`,
+                    },
+                    unique_id: "ev" + event.startYear + (event.endYear !== event.startYear ? "-" + event.endYear : ""),
+                })),
+            };
 
-            // Update the 'src' attribute of the iframe with the countries as query parameters
-            iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(
-              countryList
-            )}&startYear=${timeFrame.startYear}&endYear=${timeFrame.endYear}`;
-          }
-        }
+            var options = {
+                start_at_end: false,
+                hash_bookmark: false,
+                default_bg_color: { r: 255, g: 255, b: 255 },
+                timenav_position: "bottom",
+                optimal_tick_width: 100,
+                scale_factor: 4,
+            };
 
-        window.timeline = new TL.Timeline("timeline", timelineData, options);
-        window.timeline.on("change", function (e) {
-          var startYear = parseInt(e.unique_id.slice(1, 5), 10);
-          setCountriesForTimeFrame(startYear);
+            function setCountriesForTimeFrame(startYear) {
+                var timeFrame = timeFrames.find(
+                    (frame) => frame.startYear === startYear
+                );
+                if (timeFrame) {
+                    var iframe = document.getElementById("graph-iframe");
+                    var countryList = timeFrame.countries.join(",");
+
+                    iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(
+                        countryList
+                    )}&startYear=${timeFrame.startYear}&endYear=${timeFrame.endYear}`;
+                }
+            }
+
+            window.timeline = new TL.Timeline("timeline", timelineData, options);
+            window.timeline.on("change", function (e) {
+                var id = e.unique_id.slice(2);
+                var selectedEvent = events.find(event => "ev" + event.startYear + (event.endYear !== event.startYear ? "-" + event.endYear : "") === e.unique_id);
+                if (selectedEvent) {
+                    updateIframeWithCountries(selectedEvent.countries, selectedEvent.startYear, selectedEvent.endYear);
+                }
+            });
+
+            function updateIframeWithCountries(countries, startYear, endYear) {
+                var iframe = document.getElementById("graph-iframe");
+                var countryList = countries.join(",");
+                iframe.src = `d3graph/graph.html?countries=${encodeURIComponent(countryList)}&startYear=${startYear}&endYear=${endYear}`;
+            }
+
+            // adding a scroll listener
+            // it just cycles through the index of the iframes
+            // var currentFrameIndex = 0;
+            // window.addEventListener("wheel", function (event) {
+            //     if (event.deltaY > 0) {
+            //         // Scroll down
+            //         currentFrameIndex++;
+            //     } else if (event.deltaY < 0) {
+            //         // Scroll up
+            //         currentFrameIndex--;
+            //     }
+            //     currentFrameIndex =
+            //         (currentFrameIndex + timeFrames.length) % timeFrames.length; // Ensure index wraps around
+            //     var startYear = timeFrames[currentFrameIndex].startYear;
+            //     setCountriesForTimeFrame(startYear);
+            //     //   document.querySelector(`[data-id="${startYear}"]`).click();
+            // });
         });
-
-        // adding a scroll listener
-        // it just cycles through the index of the iframes
-        var currentFrameIndex = 0;
-        window.addEventListener("wheel", function (event) {
-          if (event.deltaY > 0) {
-            // Scroll down
-            currentFrameIndex++;
-          } else if (event.deltaY < 0) {
-            // Scroll up
-            currentFrameIndex--;
-          }
-          currentFrameIndex =
-            (currentFrameIndex + timeFrames.length) % timeFrames.length; // Ensure index wraps around
-          var startYear = timeFrames[currentFrameIndex].startYear;
-          setCountriesForTimeFrame(startYear);
-          //   document.querySelector(`[data-id="${startYear}"]`).click();
-        });
-      });
     </script>
-  </body>
+</body>
+
 </html>

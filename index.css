@@ -35,8 +35,8 @@ html {
 
 #graph-iframe {
     margin-bottom: 1rem;
-    width: 60vw;
-    height: 33.75vw;
+    width: 48vw;
+    height: 27vw;
     border: 1px solid silver;
     padding: 1rem;
 }
@@ -44,23 +44,22 @@ html {
 #timeline {
     width: 60vw;
     height: 20vh;
-    margin-top: 2rem;
 }
 
 .tl-storyslider {
-    height: 8rem !important;
+    height: 12rem !important;
 }
 
 .tl-timeline {
-    height: 10rem !important;
-}
-
-.tl-timenav {
-    height: 5rem !important;
+    height: 23rem !important;
 }
 
 .tl-menubar,
 .tl-attribution {
+    display: none !important;
+}
+
+.tl-slidenav-description {
     display: none !important;
 }
 
