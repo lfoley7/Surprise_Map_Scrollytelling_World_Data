@@ -11,12 +11,11 @@
 
 <body>
     <div id="graph-container" class="svg-container"></div>
-    <input type="hidden" id="country-list" value="United States,China,India" />
+    <input type="hidden" id="country-list" value="" />
     <input type="hidden" id="startYear" value="" />
     <input type="hidden" id="endYear" value="" />
 
     <script>
-
         function getQueryStringValue(key) {
             return decodeURIComponent(
                 window.location.search.replace(
@@ -61,7 +60,7 @@
             var overallWidth = document.getElementById("graph-container").offsetWidth;
             var overallHeight = document.getElementById("graph-container").offsetHeight;
 
-            let offsetWidth = overallWidth / 15;
+            let offsetWidth = overallWidth / 9;
             let offsetHeight = overallHeight / 15;
 
             // Set the width and height of the SVG element
@@ -104,6 +103,12 @@
                 // Generate random colors for each country
                 const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
+                // Get the keys (country names) from the groupedData
+                const namesArray = Array.from(groupedData.keys());
+
+                // Extract colors corresponding to each country using colorScale
+                const colorsArray = namesArray.map(country => colorScale(country));
+
                 // Define scales
                 const xScale = d3
                     .scaleLinear()
@@ -136,32 +141,36 @@
                         .attr("class", "line")
                         .attr("d", line)
                         .style("stroke", color);
-
-                    //filter for NaNs
-                    const filteredData = countryData.filter(
-                        (obj) => !isNaN(obj.militarySpendingLog)
-                    );
-                    const lastValidIndex = countryData.indexOf(
-                        filteredData[filteredData.length - 1]
-                    );
-                    console.log(lastValidIndex);
-
-                    // Append label for each line
-                    if (lastValidIndex !== -1) {
-                        svg
-                            .append("text")
-                            .datum(countryData[countryData.length - 1]) // Position the label at the end of the line
-                            .attr(
-                                "transform",
-                                `translate(${xScale(countryData[lastValidIndex].year)}, ${yScale(countryData[lastValidIndex].militarySpendingLog)})`
-                            )
-                            .attr("x", 5) // Offset from the end of the line
-                            .attr("dy", "0.35em")
-                            .style("font-size", "12px")
-                            .style("fill", color)
-                            .text(country);
-                    }
                 });
+
+                var data = colorsArray.map((color, index) => ({ color: color, name: namesArray[index] }));
+
+                // Append a group element for the legend
+                var legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", `translate(${overallWidth - offsetWidth},${overallHeight / 2})`);
+
+                // Bind data to create legend items
+                var legendItems = legend.selectAll(".legend-item")
+                    .data(data)
+                    .enter().append("g")
+                    .attr("class", "legend-item")
+                    .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
+
+                // Append colored rectangles
+                legendItems.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("fill", function (d) { return d.color; });
+
+                // Append country names
+                legendItems.append("text")
+                    .attr("x", 20)
+                    .attr("y", 10)
+                    .attr("dy", "0.35em")
+                    .text(function (d) { return d.name; });
 
                 //Add axes
                 svg
